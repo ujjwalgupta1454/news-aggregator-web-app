@@ -1,0 +1,34 @@
+name: CI/CD for react application #workflow name
+
+on: #trigger event
+  push:
+    branches: [main]
+  workflow_dispatch: #option for UI trigger
+
+jobs: #tasks to perform
+  build_and_deploy: #job name
+    runs-on: ubuntu-latest #platform for execution
+
+    permissions: #permission to job to write otherwise push to gh-page branch step would fail
+      contents: write
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+      
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build Project
+        run: npm run build #create build folder
+
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@4.1.0
+        with:
+          branch: gh-pages #banch where to push code
+          folder: build #folder to push
